@@ -10,8 +10,7 @@ ISBN : String,
 
 price:String,
 
-
-coverImage : String,
+coverImageUrl : String,
 
 stockquantity:String,
 

@@ -1,5 +1,5 @@
 const User = require("../modals/usermodal");
-
+const Books = require("../modals/booksmodal")
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const secretkey = process.env.SECRET_KEY;
@@ -70,32 +70,71 @@ const getAdmins = async (req, res) => {
 const addBooks = async (req, res) => {
   const { title, author, price, ISBN, stockquantity } = req.body;
 
-  const Image = req.file.path;
+  const image = req.file.path
 
-  if (title && author && price && ISBN && stockquantity && Image !== "") {
-    const alreadyexists = await findone({ ISBN });
+
+  if (title && author && price && ISBN && stockquantity && image !== "") {
+    const alreadyexists = await Books.findOne({ ISBN });
+   
     if (!alreadyexists) {
-      const coverImage = cloudinary.v2.uploader.upload(Image, {
+      const upload = await cloudinary.v2.uploader.upload(image, {
         folder: "booksbud_books",
       });
 
-      if (coverImage) {
+      if (upload) {
         const coverImageUrl = await upload.secure_url;
 
-        if (coverImageUrl !== "") {
+       
           const newBook = new Books({
             title,
             author,
             price,
             ISBN,
-            stockquantity,
             coverImageUrl,
+            stockquantity,
+           
           });
           newBook.save()
-        }
+        return  res.json({message:"book uploaded successfully"})
+ 
       }else {res.json({message:"error uploading image"})}
     } else {res.json({message:" Book already exists in data base"})}
   }else {res.json({message:"book details required"})}
 };
+  
 
-module.exports = { createAdmin, getUsers, getAdmins };
+
+
+ const deletebook = async (req,res)=>{
+
+
+  const {ISBN} = req.body
+
+if(ISBN !== "")
+{const deletebook = await Books.findOneAndDelete(ISBN)
+
+if(deletebook){
+
+
+res.json({message:"Book deleted succcessfully"})
+
+
+}else{res.json({message:"deletion failed"})}
+
+
+
+
+
+
+
+
+}else{res.json({message:"ISBN not valid"})}
+
+
+
+
+
+
+
+ }
+module.exports = { createAdmin, getUsers, getAdmins ,addBooks,deletebook };

@@ -7,9 +7,9 @@ const cloudinary = require("../utilities/cloudinary");
 
 const registerController = async (req, res) => {
   try {
-    const { firstname, lastname, email, phone, password, birthday } = req.body;
+    const { firstname, lastname, email, phone, password, birthday ,image} = req.body;
 
-    const image = req.file.path;
+ 
    
 
     if (firstname && email && phone && password && birthday && image !== "") {

@@ -5,8 +5,9 @@ const cors = require('cors')
 const cookieParser = require('cookie-parser')
 const {registerController, loginController, logoutController} = require("./controlers/usercontrollers");
 const multmidware = require("./utilities/multer");
-const { createAdmin, getUsers, getAdmins } = require("./controlers/admincontroller");
+const { createAdmin, getUsers, getAdmins, addBooks, deletebook } = require("./controlers/admincontroller");
 const isAdmin = require("./authentication/adminauth");
+const connectDB = require("./config/conndb");
 
 
 
@@ -19,13 +20,9 @@ app.use(cookieParser())
 
 require("dotenv").config();
 
-const url = process.env.MONGO_URL;
-
-if(mongoose.connect(url)){
-console.log("database connected on MOngoDb")
 
 
-}else{console.log("something is wrong")}
+connectDB()
 
 
 
@@ -44,6 +41,8 @@ app.post("/user/logout",logoutController)
 app.post("/admin/create" ,multmidware, createAdmin)
 app.get("/admin/getusers" ,isAdmin,getUsers)
 app.get("/admin/getadmins" ,isAdmin,getAdmins)
+app.post("/admin/addbooks",multmidware ,isAdmin,addBooks)
+app.post("/admin/deletebook",isAdmin,deletebook)
 
 
 
@@ -51,4 +50,4 @@ app.get("/admin/getadmins" ,isAdmin,getAdmins)
 
 
 
-app.listen(6000, console.log("connected on localhost:6000"));
+app.listen(5000, console.log("connected on localhost:5000"));
